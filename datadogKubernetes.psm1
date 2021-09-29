@@ -1,24 +1,19 @@
 Using module .\datadogClass.psm1
 
-$APIKey = "123456"
-$APPKey = "789456"
-
-$teste = New-Object -TypeName datadog
-
-class datadogGcpPubSub : datadog 
+# Funcoes que consultam metricas ou eventos de um cluster k8s
+class datadogKubernetes : datadog 
 {
-    [string]$subscriptionId
+    [string]$clustername
 
-    # Constructor
-    datadogGcpPubSub ([string]$APIKey, [string]$APPKey, [string]$subscriptionId) 
+    datadogKubernetes
     {
         $this.APIKey = $APIKey
         $this.APPKey = $APPKey
         $this.headers.Add("Content-Type", "application/json")
         $this.headers.Add("DD-API-KEY", $this.APIKey)
         $this.headers.Add("DD-APPLICATION-KEY", $this.APPKey)
-        $this.subscriptionId = $subscriptionId
+        $this.clustername = $clustername
     }
 
-
+    
 }
