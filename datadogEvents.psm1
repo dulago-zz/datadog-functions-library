@@ -1,4 +1,4 @@
-## Funcoes para extrair estatisticas de logs indexados pelo Datadog e enviar logs
+## Funcoes para obter e enviar informacoes de eventos para o Datadog
 class datadogLogs : datadog 
 {
     # Constructor
@@ -10,24 +10,24 @@ class datadogLogs : datadog
         $this.headers.Add("DD-API-KEY", $this.APIKey)
         $this.headers.Add("DD-APPLICATION-KEY", $this.APPKey)
     }
-    
-    # send a log payload to Datadog. Recomendado que mensagem seja JSON
-    [string]sendLog([string]$message,[string]$service)
+
+    [string]sendEvent([string]$title, [string]$message, [string]$severity)
     {
+        $uri = "https://api.datadoghq.com/api/v1/events"
         $body = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-        $body.Add("ddsource", "powershell")
-        $body.Add("message",$message)
-        $body.add("service",$service)    
-        $uri = "https://http-intake.logs.datadoghq.com/v1/input"
+        $body.Add("title",$title)
+        $body.Add("text",$message)
+        $body.Add("alert_type",$severity)
+
         try 
         {
             $response = Invoke-WebRequest -Uri $uri -Headers $this.headers -Body ($body | ConvertTo-Json) -Method "POST"    
-            return "Log successfully sent to Datadog"
+            return "Event successfully sent to Datadog"
         }
         catch 
         {
             $StatusCode = $_.Exception.Response.StatusCode.value__
-            return "[ERROR] Error sending logs do Datadog (Status code $StatusCode)"
+            return "[ERROR] Error sending event do Datadog (Status code $StatusCode)"
         }
     }
 }

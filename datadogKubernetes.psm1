@@ -15,7 +15,7 @@ class datadogKubernetes : datadog
         $this.clustername = $clustername
     }
 
-    # Obtem a quantidade a quantidade de restart de pods em cada deploy nos ultimos 5min
+    # Obtem a quantidade a quantidade de restart de pods em cada deploy nos ultimos 5 minutos
     # (Nao retorna deployments que nao tiveram restart de pod nesse periodo)
     [System.Object[]] getPodRestarts () 
     {

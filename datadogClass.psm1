@@ -13,7 +13,5 @@ class datadog
         $this.headers.Add("Content-Type", "application/json")
         $this.headers.Add("DD-API-KEY", $this.APIKey)
         $this.headers.Add("DD-APPLICATION-KEY", $this.APPKey)
-    }
-
-    
+    }   
 }
