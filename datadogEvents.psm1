@@ -11,6 +11,7 @@ class datadogLogs : datadog
         $this.headers.Add("DD-APPLICATION-KEY", $this.APPKey)
     }
 
+    # envia um evento para o Datadog. Recomendado que a mensagem seja um JSON
     [string]sendEvent([string]$title, [string]$message, [string]$severity)
     {
         $uri = "https://api.datadoghq.com/api/v1/events"
