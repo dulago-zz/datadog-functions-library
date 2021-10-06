@@ -28,7 +28,15 @@ class datadogGcpPubSub : datadog
         $queryEncoded = [uri]::EscapeDataString($query)
         $uri = "https://api.datadoghq.com/api/v1/query?from=$($epochTimestampBefore)&to=$($epochTimestampNow)&query=$($queryEncoded)"
         
-        $response = Invoke-RestMethod -Uri $uri -Method "GET" -Headers $this.headers
+        try 
+        {
+            $response = Invoke-RestMethod -Uri $uri -Method "GET" -Headers $this.headers
+        }
+        catch 
+        {
+            $StatusCode = $_.Exception.Response.StatusCode.value__
+            return "[ERROR] Error sending event do Datadog (Status code $StatusCode)"
+        }
 
         $numMessages = 0
         for ($i = 0; $i -lt $response.series.pointlist.Count; $i++) 
