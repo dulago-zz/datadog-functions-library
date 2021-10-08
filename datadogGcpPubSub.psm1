@@ -35,7 +35,7 @@ class datadogGcpPubSub : datadog
         catch 
         {
             $StatusCode = $_.Exception.Response.StatusCode.value__
-            return "[ERROR] Error sending event do Datadog (Status code $StatusCode)"
+            return "[ERROR] Error getting log data from Datadog (Status code $StatusCode)"
         }
 
         $numMessages = 0

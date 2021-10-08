@@ -1,8 +1,8 @@
 ## Funcoes para obter e enviar informacoes de eventos para o Datadog
-class datadogLogs : datadog 
+class datadogEvent : datadog 
 {
     # Constructor
-    datadogGcpPubSub ([string]$APIKey, [string]$APPKey) 
+    datadogEvent ([string]$APIKey, [string]$APPKey) 
     {
         $this.APIKey = $APIKey
         $this.APPKey = $APPKey
@@ -12,6 +12,7 @@ class datadogLogs : datadog
     }
 
     # envia um evento para o Datadog. Recomendado que a mensagem seja um JSON
+    # Severidades: error, warning, info, success, user_update, recommendation, snapshot
     [string]sendEvent([string]$title, [string]$message, [string]$severity)
     {
         $uri = "https://api.datadoghq.com/api/v1/events"
@@ -23,7 +24,7 @@ class datadogLogs : datadog
         try 
         {
             $response = Invoke-WebRequest -Uri $uri -Headers $this.headers -Body ($body | ConvertTo-Json) -Method "POST"    
-            return "Event successfully sent to Datadog"
+            return $true
         }
         catch 
         {
