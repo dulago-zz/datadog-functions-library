@@ -21,8 +21,8 @@ class datadogGcpPubSub : datadog
     # Retorna a quantidade de mensagens nao lidas na fila no momento
     [int] getUndeliveredMessages () 
     {
-        $epochTimestampNow = [Math]::Floor([decimal](Get-Date(Get-Date).ToUniversalTime()-uformat "%s"))
-        $epochTimestampBefore = $epochTimestampNow - 1200
+        $epochTimestampNow = ([Math]::Floor([decimal](Get-Date(Get-Date).ToUniversalTime()-uformat "%s")) - 180) # 3min delay to account for GCP metrics delay
+        $epochTimestampBefore = $epochTimestampNow - 300
         $query = "max:gcp.pubsub.subscription.num_undelivered_messages{subscription_id:$($this.subscriptionId),project_id:$($this.projectId)}" 
         $queryEncoded = [uri]::EscapeDataString($query)
         $uri = "https://api.datadoghq.com/api/v1/query?from=$($epochTimestampBefore)&to=$($epochTimestampNow)&query=$($queryEncoded)"
