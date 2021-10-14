@@ -18,12 +18,11 @@ class datadogGcpPubSub : datadog
         $this.subscriptionId = $subscriptionId
     }
     
-    # Retorna a quantidade de mensagens na fila num intervalo de X minutos
-    [int] getUndeliveredMessages ($interval) 
+    # Retorna a quantidade de mensagens nao lidas na fila no momento
+    [int] getUndeliveredMessages () 
     {
-        $intervalSeconds = $interval * 60
         $epochTimestampNow = [Math]::Floor([decimal](Get-Date(Get-Date).ToUniversalTime()-uformat "%s"))
-        $epochTimestampBefore = $epochTimestampNow - $intervalSeconds
+        $epochTimestampBefore = $epochTimestampNow - 1200
         $query = "max:gcp.pubsub.subscription.num_undelivered_messages{subscription_id:$($this.subscriptionId),project_id:$($this.projectId)}" 
         $queryEncoded = [uri]::EscapeDataString($query)
         $uri = "https://api.datadoghq.com/api/v1/query?from=$($epochTimestampBefore)&to=$($epochTimestampNow)&query=$($queryEncoded)"
@@ -38,11 +37,6 @@ class datadogGcpPubSub : datadog
             return "[ERROR] Error getting log data from Datadog (Status code $StatusCode)"
         }
 
-        $numMessages = 0
-        for ($i = 0; $i -lt $response.series.pointlist.Count; $i++) 
-        {
-            $numMessages += $response.series.pointlist[$i][1]   
-        }
-        return $numMessages
+        return $response.series.pointlist[($response.series.pointlist.Length)-1][1]
     }
 }
