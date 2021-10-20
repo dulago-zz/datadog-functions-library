@@ -1,3 +1,5 @@
+Using module .\datadogClass.psm1
+
 ## Funcoes para obter e enviar informacoes de eventos para o Datadog
 class datadogEvent : datadog 
 {
