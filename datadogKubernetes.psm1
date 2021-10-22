@@ -24,9 +24,9 @@ class datadogKubernetes : datadog
         $query = "exclude_null(max:kubernetes.containers.restarts{cluster_name:$($this.clustername)} by {kube_deployment}.rollup(max, 60))"
         $queryEncoded = [uri]::EscapeDataString($query)
         $uriNow = "https://api.datadoghq.com/api/v1/query?from=$($epochTimestampNow - 60)&to=$($epochTimestampNow)&query=$($queryEncoded)"
-        $requestNow = Invoke-RestMethod -Uri $uriNow -Headers $this.headers -Method "GET"
+        $requestNow = Invoke-RestMethod -Uri $uriNow -Headers $this.headers -Method "GET" -SkipCertificateCheck
         $uri5MinAgo = "https://api.datadoghq.com/api/v1/query?from=$($epochTimestampBefore - 60)&to=$($epochTimestampBefore)&query=$($queryEncoded)"
-        $request5MinAgo = Invoke-RestMethod -Uri $uri5MinAgo -Headers $this.headers -Method "GET"
+        $request5MinAgo = Invoke-RestMethod -Uri $uri5MinAgo -Headers $this.headers -Method "GET" -SkipCertificateCheck
         $seriesNow = $requestNow.series
         $series5MinAgo = $request5MinAgo.series
 

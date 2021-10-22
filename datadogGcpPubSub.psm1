@@ -29,7 +29,7 @@ class datadogGcpPubSub : datadog
         
         try 
         {
-            $response = Invoke-RestMethod -Uri $uri -Method "GET" -Headers $this.headers
+            $response = Invoke-RestMethod -Uri $uri -Method "GET" -Headers $this.headers -SkipCertificateCheck
         }
         catch 
         {

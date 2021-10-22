@@ -23,7 +23,7 @@ class datadogLogs : datadog
         $uri = "https://http-intake.logs.datadoghq.com/v1/input"
         try 
         {
-            $response = Invoke-WebRequest -Uri $uri -Headers $this.headers -Body ($body | ConvertTo-Json) -Method "POST"    
+            $response = Invoke-WebRequest -Uri $uri -Headers $this.headers -Body ($body | ConvertTo-Json) -Method "POST" -SkipCertificateCheck   
             return $true
         }
         catch 
@@ -41,7 +41,7 @@ class datadogLogs : datadog
         $uri = "https://api.datadoghq.com/api/v2/logs/events/search"
         try 
         {
-            $response = Invoke-RestMethod -Uri $uri -Method "POST" -Headers $this.headers -Body $body
+            $response = Invoke-RestMethod -Uri $uri -Method "POST" -Headers $this.headers -Body $body -SkipCertificateCheck
             $numErr = $response.data.count
             if ($numErr -eq 0) { return $false }
             else { return $true }
@@ -61,7 +61,7 @@ class datadogLogs : datadog
         $uri = "https://api.datadoghq.com/api/v2/logs/events/search"
         try 
         {
-            $response = Invoke-RestMethod -Uri $uri -Method "POST" -Headers $this.headers -Body $body
+            $response = Invoke-RestMethod -Uri $uri -Method "POST" -Headers $this.headers -Body $body -SkipCertificateCheck
             $numErr = $response.data.count
             if ($numErr -eq 0) { return $false }
             else { return $true }

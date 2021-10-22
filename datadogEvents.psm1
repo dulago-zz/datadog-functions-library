@@ -25,7 +25,7 @@ class datadogEvent : datadog
 
         try 
         {
-            $response = Invoke-WebRequest -Uri $uri -Headers $this.headers -Body ($body | ConvertTo-Json) -Method "POST"    
+            $response = Invoke-WebRequest -Uri $uri -Headers $this.headers -Body ($body | ConvertTo-Json) -Method "POST" -SkipCertificateCheck     
             return $true
         }
         catch 
