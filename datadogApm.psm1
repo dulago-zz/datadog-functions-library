@@ -2,7 +2,7 @@ Using module .\datadogClass.psm1
 
 class datadogApm : datadog 
 {
-    datadogApm([string]$APIKey, [string]$APPKey, [string]$clustername) 
+    datadogApm([string]$APIKey, [string]$APPKey) 
     {
         $this.APIKey = $APIKey
         $this.APPKey = $APPKey
@@ -12,7 +12,7 @@ class datadogApm : datadog
     }
 
     # return a list of all services that reported to Datadog APM in the last given hours
-    getReportingServices([int] $lastHours)
+    [System.Collections.Generic.List[string]]getReportingServices([int] $lastHours)
     {
         $epochTimestampNow = [Math]::Floor([decimal](Get-Date(Get-Date).ToUniversalTime()-uformat "%s"))
         $epochTimestampBefore = $epochTimestampNow - ($lastHours * 3600)
@@ -22,7 +22,7 @@ class datadogApm : datadog
 
         try 
         {
-            $response = Invoke-RestMethod -Uri $uri -Method "GET" -Headers $headers -SkipCertificateCheck        
+            $response = Invoke-RestMethod -Uri $uri -Method "GET" -Headers $this.headers -SkipCertificateCheck        
         }
         catch 
         {
