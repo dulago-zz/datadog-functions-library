@@ -18,7 +18,7 @@ class datadogGcpPubSub : datadog
         $this.subscriptionId = $subscriptionId
     }
     
-    # Retorna a quantidade de mensagens nao lidas na fila no momento
+    # Return the number of messages currently in the subscription
     [int] getUndeliveredMessages () 
     {
         $epochTimestampNow = ([Math]::Floor([decimal](Get-Date(Get-Date).ToUniversalTime()-uformat "%s")) - 180) # 3min delay to account for GCP metrics delay
