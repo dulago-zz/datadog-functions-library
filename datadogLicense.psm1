@@ -3,7 +3,7 @@ using module .\datadogApm.psm1
 
 class datadogLicense : datadog 
 {
-    datadogApm([string]$APIKey, [string]$APPKey) 
+    datadogLicense([string]$APIKey, [string]$APPKey) 
     {
         $this.APIKey = $APIKey
         $this.APPKey = $APPKey
