@@ -30,9 +30,9 @@ class datadogApm : datadog
             return "[ERROR] Error getting services from Datadog (Status code $StatusCode)"
         }
         $serviceList = [System.Collections.Generic.List[string]]::new()
-        foreach ($item in $response.series) 
+        foreach ($service in $response.series) 
         {
-            $serviceList.Add($item.tag_set.Split(":")[1])    
+            $serviceList.Add($service.tag_set.Split(":")[1])    
         }
 
         return $serviceList
