@@ -12,7 +12,7 @@ class datadogLicense : datadog
         $this.headers.Add("DD-APPLICATION-KEY", $this.APPKey)
     }
 
-    # returns the ratio of indexed spans for each service compared to the total on the last given hours
+    # returns the ratio of indexed spans for each service compared to all indexed spans on the last given hours
     [psobject] getIndexedSpansRatioPerService([int] $lastHours)
     {
         $epochTimestampNow = [Math]::Floor([decimal](Get-Date(Get-Date).ToUniversalTime()-uformat "%s"))
@@ -56,5 +56,31 @@ class datadogLicense : datadog
         }
         
         return $ratioPerService
+    }
+
+    # returns the total amount of billable spans (indexed) in the last given hours
+    [double] getBillableSpans([int] $lastHours)
+    {
+        $epochTimestampNow = Get-Date
+        $epochTimestampBefore = $epochTimestampNow.AddHours(($lastHours)*-1)
+        $epochTimestampNow = $epochTimestampNow.GetDateTimeFormats()[17].Split(":")[0]
+        $epochTimestampBefore = $epochTimestampBefore.GetDateTimeFormats()[17].Split(":")[0]
+        $uri = "https://api.datadoghq.com/api/v1/usage/indexed-spans?start_hr=$($epochTimestampBefore)&end_hr=$($epochTimestampNow)"
+
+        try 
+        {
+            $response = Invoke-RestMethod -Uri $uri -Headers $this.headers
+        }
+        catch 
+        {
+            $StatusCode = $_.Exception.Response.StatusCode.value__
+            return "[ERROR] Error getting span usage data from Datadog (Status code $StatusCode)"
+        }
+        [double]$billedSpans = 0
+        foreach ($item in $response.usage.indexed_events_count) 
+        {
+            $billedSpans += $item
+        }
+        return $billedSpans
     }
 }
