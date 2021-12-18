@@ -12,6 +12,7 @@ class datadogLicense : datadog
         $this.headers.Add("DD-APPLICATION-KEY", $this.APPKey)
     }
 
+    #region APM Licensing functions
     # returns the ratio of indexed spans for each service compared to all indexed spans on the last given hours
     [psobject] getIndexedSpansRatioPerService([int] $lastHours)
     {
@@ -56,7 +57,7 @@ class datadogLicense : datadog
         }
         
         return $ratioPerService
-    }
+    } 
 
     # returns the total amount of billable spans (indexed) in the last given hours
     [double] getBillableSpans([int] $lastHours)
@@ -83,4 +84,22 @@ class datadogLicense : datadog
         }
         return $billedSpans
     }
+
+    # returns the total amount of billable spans per service in the last given hours
+    [psobject] getBillableSpansPerService([int] $lastHours)
+    {
+        [psobject]$ratioPerService = $this.getIndexedSpansRatioPerService($lastHours)
+        [double]$billableSpans = $this.getBillableSpans($lastHours)
+        $billableSpansPerService = New-Object "System.Collections.Generic.Dictionary[[String],[double]]"
+
+        foreach ($service in $ratioPerService.keys) 
+        {
+            [double] $serviceBillableSpans = 0
+            $serviceBillableSpans = $ratioPerService.$service * $billableSpans
+
+            $billableSpansPerService.Add("$service", [System.Math]::Ceiling($serviceBillableSpans/100))
+        }
+        return $billableSpansPerService
+    }
+    #endregion
 }
