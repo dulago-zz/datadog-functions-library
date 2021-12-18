@@ -55,7 +55,6 @@ class datadogLicense : datadog
             $ratio = ($totalSpans/$allSpans)*100
             $ratioPerService.Add("$serviceName", $ratio)
         }
-        
         return $ratioPerService
     } 
 
